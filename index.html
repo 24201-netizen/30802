@@ -31,11 +31,31 @@
       color: #00695c;
     }
 
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+      color: #004d40;
+      text-align: center;
+    }
+
     .subtitle {
       text-align: center;
       color: #617d8a;
       margin-bottom: 24px;
       font-size: 15px;
+    }
+
+    /* 인증 섹션 스타일 */
+    .auth-box {
+      max-width: 420px;
+      margin: 40px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 24px;
+      border-radius: 20px;
+      background: #f7f9fb;
+      border: 1px solid #edf1f5;
     }
 
     .info {
@@ -49,6 +69,23 @@
       border-left: 5px solid #009688;
     }
 
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding: 14px 20px;
+      border-radius: 16px;
+      background: #f0f7f6;
+      border: 1px solid #b2dfdb;
+    }
+
+    .user-info {
+      font-size: 14px;
+      color: #004d40;
+    }
+
     .section-title {
       font-size: 16px;
       font-weight: bold;
@@ -56,7 +93,6 @@
       color: #00796b;
     }
 
-    /* 실험 프로토콜 템플릿 버튼 스타일 */
     .template-box {
       display: flex;
       gap: 10px;
@@ -74,7 +110,6 @@
       cursor: pointer;
       transition: all 0.2s;
       font-weight: bold;
-      height: auto;
     }
 
     .template-btn:hover {
@@ -99,10 +134,7 @@
       background: #fafafa;
     }
 
-    select, input {
-      height: 46px;
-    }
-
+    select, input { height: 46px; }
     textarea {
       width: 100%;
       min-height: 180px;
@@ -152,20 +184,12 @@
       transform: none;
     }
 
-    .make-btn {
-      background: #009688;
-      color: white;
-    }
-
-    .clear-btn {
-      background: #cfd8dc;
-      color: #37474f;
-    }
-
-    .download-link {
-      background: #7e57c2;
-      color: white;
-    }
+    .login-btn { background: #42a5f5; color: white; }
+    .signup-btn { background: #7e57c2; color: white; }
+    .logout-btn { background: #455a64; color: white; height: 38px; font-size: 13px; }
+    .make-btn { background: #009688; color: white; }
+    .clear-btn { background: #cfd8dc; color: #37474f; }
+    .download-link { background: #00796b; color: white; }
 
     .hidden { display: none; }
 
@@ -185,96 +209,144 @@
       border: 1px solid #b2dfdb;
     }
 
-    audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .help {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #78909c;
-      line-height: 1.6;
-    }
+    audio { width: 100%; margin-top: 10px; }
+    .notice { text-align: center; color: #777; font-size: 13px; margin-top: 10px; }
+    .help { margin-top: 20px; font-size: 13px; color: #78909c; line-height: 1.6; }
 
     @media (max-width: 700px) {
       .option-box { grid-template-columns: 1fr; }
       .button-row { justify-content: stretch; }
       button, .download-link { width: 100%; }
+      .top-bar { flex-direction: column; align-items: flex-start; }
+      .logout-btn { width: 100%; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🧬 Bio-Lab 스마트 랩 어시스턴트</h1>
-    <div class="subtitle">실험 중 양손이 자유롭지 못할 때, AI가 실험 절차를 실시간 가이드해 드립니다</div>
+    <div class="subtitle">실험실 보안 로그인 및 AI 오디오 가이드 빌더</div>
 
-    <div class="info">
-      💡 <b>Tip:</b> 연구실 환경에 맞춰 <b>목소리 종류</b>를 고르고, 실험을 여유롭게 따라 할 수 있도록 <b>속도를 0.85 ~ 0.90</b> 정도로 약간 느리게 설정하는 것을 추천합니다. 단위는 한글 발음으로 적어야 명확히 들립니다.
-    </div>
-
-    <div class="section-title">🧪 실험 프로토콜 템플릿 선택</div>
-    <div class="template-box">
-      <button type="button" class="template-btn" onclick="loadProtocol('pcr')">🧬 PCR 마스터믹스 제조</button>
-      <button type="button" class="template-btn" onclick="loadProtocol('dna')">🧪 DNA 추출 (Cell Lysis)</button>
-      <button type="button" class="template-btn" onclick="loadProtocol('gel')">🧫 Agarose Gel 전기영동</button>
-    </div>
-
-    <div class="section-title">🎛️ AI 음성 설정</div>
-    <div class="option-box">
-      <select id="modelSelect">
-        <option value="tts-1">tts-1 (빠른 가이드 생성)</option>
-        <option value="tts-1-hd">tts-1-hd (고품질 음성)</option>
-      </select>
-
-      <select id="voiceSelect">
-        <option value="alloy">alloy (차분함)</option>
-        <option value="echo">echo (중저음 남성)</option>
-        <option value="fable">fable (선명함)</option>
-        <option value="onyx">onyx (굵은 남성음)</option>
-        <option value="nova" selected>nova (또렷한 여성음 - 추천)</option>
-        <option value="shimmer">shimmer (밝은 여성음)</option>
-      </select>
-
-      <input id="speedInput" type="number" min="0.25" max="4.0" step="0.05" value="0.90" placeholder="속도" />
-    </div>
-
-    <div>
-      <div class="section-title">📝 실험 가이드 내용 (직접 수정 가능)</div>
-      <textarea id="textInput" placeholder="실험실에서 청취할 프로토콜 내용을 입력하거나 위의 템플릿을 선택하세요."></textarea>
-    </div>
-
-    <div class="button-row">
-      <button class="clear-btn" id="clearBtn">초기화</button>
-      <button class="make-btn" id="makeBtn">음성 가이드 생성</button>
-    </div>
-
-    <div id="status" class="status"></div>
-
-    <div id="resultBox" class="result-box hidden">
-      <div class="section-title" style="margin-top:0;">🔊 생성된 오디오 가이드</div>
-      <audio id="audioPlayer" controls></audio>
-      <div class="button-row">
-        <a id="downloadLink" class="download-link" href="#" download="lab-guide.mp3">오디오 파일(.mp3) 다운로드</a>
+    <section id="authSection">
+      <div class="auth-box">
+        <h2>실험실 계정 인증</h2>
+        <input id="emailInput" type="email" placeholder="이메일 주소" />
+        <input id="passwordInput" type="password" placeholder="비밀번호 (6자리 이상)" />
+        <button class="login-btn" id="loginBtn">로그인</button>
+        <button class="signup-btn" id="signupBtn">연구원 등록 (회원가입)</button>
+        <div class="notice">외부인의 프로토콜 접근을 차단하기 위해 로그인이 필요합니다.</div>
       </div>
-    </div>
+    </section>
 
-    <div class="help">
-      * 긴 실험 프로토콜은 음성 변환에 시간이 수십 초 소요될 수 있습니다.<br />
-      * Ctrl + Enter 키를 누르면 바로 음성 가이드가 생성됩니다.
-    </div>
+    <section id="mainSection" class="hidden">
+      <div class="top-bar">
+        <div class="user-info">
+          접속 연구원: <strong id="userEmail"></strong>
+        </div>
+        <button class="logout-btn" id="logoutBtn">안전 로그아웃</button>
+      </div>
+
+      <div class="info">
+        💡 <b>Tip:</b> 하단의 <b>'오디오 파일(.mp3) 다운로드'</b> 단추를 누르면 PC나 스마트폰에 직접 음성 가이드를 보관하여 무선 네트워크 연결이 불안정한 Wet-lab 내부에서도 끊김 없이 청취할 수 있습니다.
+      </div>
+
+      <div class="section-title">🧪 실험 프로토콜 템플릿 선택</div>
+      <div class="template-box">
+        <button type="button" class="template-btn" onclick="loadProtocol('pcr')">🧬 PCR 마스터믹스 제조</button>
+        <button type="button" class="template-btn" onclick="loadProtocol('dna')">🧪 DNA 추출 (Cell Lysis)</button>
+        <button type="button" class="template-btn" onclick="loadProtocol('gel')">🧫 Agarose Gel 전기영동</button>
+      </div>
+
+      <div class="section-title">🎛️ AI 음성 설정</div>
+      <div class="option-box">
+        <select id="modelSelect">
+          <option value="tts-1">tts-1 (빠른 가이드 생성)</option>
+          <option value="tts-1-hd">tts-1-hd (고품질 음성)</option>
+        </select>
+
+        <select id="voiceSelect">
+          <option value="alloy">alloy (차분함)</option>
+          <option value="echo">echo (중저음 남성)</option>
+          <option value="fable">fable (선명함)</option>
+          <option value="onyx">onyx (굵은 남성음)</option>
+          <option value="nova" selected>nova (또렷한 여성음 - 추천)</option>
+          <option value="shimmer">shimmer (밝은 여성음)</option>
+        </select>
+
+        <input id="speedInput" type="number" min="0.25" max="4.0" step="0.05" value="0.90" placeholder="속도" />
+      </div>
+
+      <div>
+        <div class="section-title">📝 실험 가이드 내용 (직접 수정 가능)</div>
+        <textarea id="textInput" placeholder="실험실에서 청취할 프로토콜 내용을 입력하거나 위의 템플릿을 선택하세요."></textarea>
+      </div>
+
+      <div class="button-row">
+        <button class="clear-btn" id="clearBtn">초기화</button>
+        <button class="make-btn" id="makeBtn">음성 가이드 생성</button>
+      </div>
+
+      <div id="status" class="status"></div>
+
+      <div id="resultBox" class="result-box hidden">
+        <div class="section-title" style="margin-top:0;">🔊 생성된 오디오 가이드 플레이어</div>
+        <audio id="audioPlayer" controls></audio>
+        <div class="button-row">
+          <a id="downloadLink" class="download-link" href="#" download="lab-guide.mp3">💾 오디오 파일(.mp3) 내 기기에 저장</a>
+        </div>
+      </div>
+
+      <div class="help">
+        * Ctrl + Enter 키를 누르면 바로 음성 가이드가 생성됩니다.<br />
+        * 다운로드한 파일은 무단 배포를 금합니다.
+      </div>
+    </section>
   </div>
 
-  <script>
-    // Google Apps Script 웹앱 URL
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    // 귀하의 기존 Firebase Config 정보 유지
+    const firebaseConfig = {
+      apiKey: 'AIzaSyDO-v52Ehwphh5gW0WBzu9_DliMhOzy4Yo',
+      authDomain: 'kang-f4e85.firebaseapp.com',
+      databaseURL: 'https://kang-f4e85-default-rtdb.firebaseio.com',
+      projectId: 'kang-f4e85',
+      storageBucket: 'kang-f4e85.firebasestorage.app',
+      messagingSenderId: '107057126084',
+      appId: '1:107057126084:web:30f7bcb3f25dd2aa4a0791',
+      measurementId: 'G-DJ52YTYQZM'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Google Apps Script 백엔드 중계 주소
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzvCeCidpIBm3Ez_AbmzTRrvzCkPa_7x-irAazDPzljPmuqjjHZOqXxfyS1vNh7tX1/exec';
 
-    // 생명공학 프로토콜 데이터베이스 (단위를 한글 독음으로 변환하여 가독성 증대)
+    // 실험 템플릿 텍스트 뱅크
     const protocolTemplates = {
       pcr: "피시알 마스터믹스 제조 가이드입니다.\n\n제 일단계. 영점 이 밀리리터 피시알 튜브를 얼음 위에 준비하십시오.\n\n제 이단계. 프리믹스용 마이크로 튜브에 파이펫을 사용하여 멸균수 십일 마이크로리터를 넣습니다.\n\n제 삼단계. 이어서 텐 엑스 피시알 버퍼 이 마이크로리터, 디앤티피 믹스 이 마이크로리터를 차례로 첨가합니다.\n\n제 사단계. 포워드 프라이머와 리버스 프라이머를 각각 일 마이크로리터씩 투입하십시오.\n\n제 오단계. 마지막으로 탁 폴리머레이즈 영점 이 마이크로리터를 넣은 후 젠틀하게 파이펫팅하여 섞어줍니다.",
       dna: "세포 용해 및 디앤에이 추출 단계입니다.\n\n제 일단계. 펠렛이 포함된 튜브에 세포 용해 완충액 오백 마이크로리터를 첨가합니다.\n\n제 이단계. 볼텍서를 사용하여 세포 침전물이 완전히 풀릴 때까지 오초간 믹싱합니다.\n\n제 삼단계. 프로티네이즈 케이 시 마이크로리터를 추가하고 조심스럽게 인버팅 하십시오.\n\n제 사단계. 항온 수조 또는 인큐베이터의 온도를 오십육 도로 맞춘 후, 튜브를 넣고 한 시간 동안 반응시키십시오. 반응 도중 시분 간격으로 가볍게 흔들어 주면 좋습니다.",
       gel: "아오로스 겔 제작 및 전기영동 절차입니다.\n\n제 일단계. 일 곱하기 티에이이 버퍼 오십 밀리리터에 아가로스 분말 영점 오 그램을 약품 저울로 계량하여 넣습니다.\n\n제 이단계. 전자레인지에 용액을 넣고, 투명해질 때까지 삼십초 간격으로 확인하며 가열합니다. 용액이 매우 뜨거우니 실리콘 장갑을 착용하십시오.\n\n제 삼단계. 용액이 육십 도 정도로 식으면, 핵산 염색 시약인 다이 오 마이크로리터를 첨가하고 겔 트레이에 기포가 생기지 않도록 천천히 부어줍니다.\n\n제 사단계. 겔이 완전히 굳을 때까지 이십분 동안 실온에 방치하십시오."
     };
+
+    // DOM 요소 변수 매핑
+    const authSection = document.getElementById('authSection');
+    const mainSection = document.getElementById('mainSection');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userEmail = document.getElementById('userEmail');
 
     const textInput = document.getElementById('textInput');
     const modelSelect = document.getElementById('modelSelect');
@@ -287,11 +359,72 @@
     const audioPlayer = document.getElementById('audioPlayer');
     const downloadLink = document.getElementById('downloadLink');
 
-    // 템플릿 로드 함수
+    // [인증 로직] 회원가입 및 로그인 연동
+    signupBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      if (!validateAuth(email, password)) return;
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert('연구원 등록이 승인되었습니다.');
+      } catch (error) {
+        alert(getKoreanErrorMessage(error.code));
+      }
+    });
+
+    loginBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      if (!validateAuth(email, password)) return;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        alert(getKoreanErrorMessage(error.code));
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        alert('로그아웃 처리 중 에러가 발생했습니다.');
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authSection.classList.add('hidden');
+        mainSection.classList.remove('hidden');
+        userEmail.textContent = user.email;
+        emailInput.value = '';
+        passwordInput.value = '';
+      } else {
+        authSection.classList.remove('hidden');
+        mainSection.classList.add('hidden');
+        userEmail.textContent = '';
+        clearPage();
+      }
+    });
+
+    function validateAuth(email, password) {
+      if (!email || !password) {
+        alert('이메일과 비밀번호를 모두 기재해 주십시오.');
+        return false;
+      }
+      if (password.length < 6) {
+        alert('비밀번호 보호를 위해 최소 6자리 이상 설정하십시오.');
+        return false;
+      }
+      return true;
+    }
+
+    // [가이드 생성 인프라 로직]
     window.loadProtocol = function(type) {
       if(protocolTemplates[type]) {
         textInput.value = protocolTemplates[type];
-        statusBox.textContent = '선택한 프로토콜이 입력되었습니다. 음성 가이드 생성 버튼을 눌러주세요.';
+        statusBox.textContent = '🔬 프로토콜이 성공적으로 주입되었습니다.';
         resultBox.classList.add('hidden');
       }
     }
@@ -312,19 +445,14 @@
       const speed = Number(speedInput.value || 1.0);
 
       if (!text) {
-        alert('실험 가이드로 변환할 프로토콜 내용을 입력해주세요.');
-        return;
-      }
-
-      if (speed < 0.25 || speed > 4.0) {
-        alert('속도는 0.25부터 4.0 사이로 입력해주세요.');
+        alert('변환할 프로토콜 가이드 문장이 존재하지 않습니다.');
         return;
       }
 
       try {
         setLoading(true);
         resultBox.classList.add('hidden');
-        statusBox.textContent = '🧬 AI 음성 허브서버로 실험 데이터를 송신 중입니다. 잠시만 기다려주세요...';
+        statusBox.textContent = '🧬 AI 음성 클라우드 서버로 실험 가이드 변환을 요청하는 중입니다...';
 
         const response = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
@@ -338,26 +466,22 @@
         });
 
         const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        if (!data.audioBase64) throw new Error('데이터 스트림 연동 오류 발생.');
 
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        if (!data.audioBase64) {
-          throw new Error('음성 가이드 데이터를 수신하지 못했습니다.');
-        }
-
+        // 이진 데이터 변환 과정을 거쳐 로컬 브라우저 인메모리 Blob URL 생성
         const audioUrl = base64ToAudioUrl(data.audioBase64, 'audio/mpeg');
 
         audioPlayer.src = audioUrl;
-        downloadLink.href = audioUrl;
+        downloadLink.href = audioUrl; // 저장 및 다운로드용 하이퍼링크 할당
         downloadLink.download = makeFileName();
+        
         resultBox.classList.remove('hidden');
-        statusBox.textContent = '✅ 오디오 가이드 준비 완료. 플레이어를 재생하거나 다운로드하세요.';
+        statusBox.textContent = '✅ 오디오 가이드 빌드 완료. 내부 기기에 파일 저장이 가능합니다.';
       } catch (error) {
         console.error(error);
-        statusBox.textContent = '❌ 요청 실패';
-        alert('오류가 발생했습니다.\n\n' + error.message);
+        statusBox.textContent = '❌ 가이드 생성 실패';
+        alert('오류 안내:\n' + error.message);
       } finally {
         setLoading(false);
       }
@@ -366,34 +490,27 @@
     function base64ToAudioUrl(base64, mimeType) {
       const byteCharacters = atob(base64);
       const byteArrays = [];
-
       for (let offset = 0; offset < byteCharacters.length; offset += 512) {
         const slice = byteCharacters.slice(offset, offset + 512);
         const byteNumbers = new Array(slice.length);
-
         for (let i = 0; i < slice.length; i++) {
           byteNumbers[i] = slice.charCodeAt(i);
         }
-
         const byteArray = new Uint8Array(byteNumbers);
         byteArrays.push(byteArray);
       }
-
       const blob = new Blob(byteArrays, { type: mimeType });
       return URL.createObjectURL(blob);
     }
 
     function makeFileName() {
       const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      return `BioLab-Guide-${year}${month}${day}.mp3`;
+      return `BioLab_Guide_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.mp3`;
     }
 
     function setLoading(isLoading) {
       makeBtn.disabled = isLoading;
-      makeBtn.textContent = isLoading ? '🧪 가이드 생성 중...' : '음성 가이드 생성';
+      makeBtn.textContent = isLoading ? '🧪 오디오 합성 중...' : '음성 가이드 생성';
     }
 
     function clearPage() {
@@ -403,6 +520,27 @@
       downloadLink.href = '#';
       resultBox.classList.add('hidden');
     }
+
+    function getKoreanErrorMessage(code) {
+      switch (code) {
+        case 'auth/email-already-in-use': return '이미 등록된 연구원 이메일입니다.';
+        case 'auth/invalid-email': return '올바른 이메일 규격이 아닙니다.';
+        case 'auth/weak-password': return '보안 수준이 낮습니다. 6자리 이상의 패스워드를 구성해 주세요.';
+        case 'auth/user-not-found': return '등록되지 않은 이메일 정보입니다.';
+        case 'auth/wrong-password': return '패스워드가 일치하지 않습니다.';
+        case 'auth/invalid-credential': return '이메일 또는 비밀번호를 다시 확인하십시오.';
+        default: return `인증 시스템 오류: ${code}`;
+      }
+    }
+
+    // 엔터키 제어 인터랙션 추가
+    document.addEventListener('keydown', function(event) {
+      if (event.key !== 'Enter') return;
+      const activeId = document.activeElement.id;
+      if (activeId === 'emailInput' || activeId === 'passwordInput') {
+        loginBtn.click();
+      }
+    });
   </script>
 </body>
 </html>

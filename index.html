@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI TTS 음성 변환기</title>
+  <title>🧬 Bio-Lab 스마트 랩 어시스턴트</title>
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #e3f2fd, #fce4ec);
-      font-family: Arial, sans-serif;
-      color: #333;
+      background: linear-gradient(135deg, #e0f2f1, #e3f2fd);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #2c3e50;
     }
 
     .container {
@@ -20,70 +20,102 @@
       margin: 40px auto;
       background: #ffffff;
       border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.16);
+      padding: 32px;
+      box-shadow: 0 15px 35px rgba(32, 50, 80, 0.12);
     }
 
     h1 {
       margin: 0 0 8px;
       text-align: center;
       font-size: 28px;
+      color: #00695c;
     }
 
     .subtitle {
       text-align: center;
-      color: #777;
+      color: #617d8a;
       margin-bottom: 24px;
-      font-size: 14px;
+      font-size: 15px;
     }
 
     .info {
-      padding: 14px;
-      margin-bottom: 20px;
+      padding: 16px;
+      margin-bottom: 24px;
       border-radius: 14px;
-      background: #e8f5e9;
-      color: #2e7d32;
+      background: #e0f2f1;
+      color: #004d40;
       font-size: 14px;
       line-height: 1.6;
+      border-left: 5px solid #009688;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+      color: #00796b;
+    }
+
+    /* 실험 프로토콜 템플릿 버튼 스타일 */
+    .template-box {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .template-btn {
+      background: #ffffff;
+      color: #00796b;
+      border: 2px solid #009688;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: bold;
+      height: auto;
+    }
+
+    .template-btn:hover {
+      background: #009688;
+      color: white;
+      transform: translateY(-2px);
     }
 
     .option-box {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    select, input {
-      height: 44px;
-      padding: 0 12px;
-      border: 1px solid #ddd;
+    select, input, textarea {
+      padding: 12px;
+      border: 1px solid #b2dfdb;
       border-radius: 12px;
       font-size: 14px;
       outline: none;
+      background: #fafafa;
+    }
+
+    select, input {
+      height: 46px;
     }
 
     textarea {
       width: 100%;
       min-height: 180px;
       resize: vertical;
-      padding: 16px;
-      border: 1px solid #ddd;
-      border-radius: 16px;
       font-size: 16px;
-      line-height: 1.5;
-      outline: none;
-      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      font-family: inherit;
     }
 
     textarea:focus, select:focus, input:focus {
-      border-color: #42a5f5;
-      box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.15);
-    }
-
-    .label {
-      font-weight: bold;
-      margin-bottom: 6px;
+      border-color: #009688;
+      box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15);
+      background: #ffffff;
     }
 
     .button-row {
@@ -91,14 +123,14 @@
       gap: 10px;
       justify-content: flex-end;
       flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
     button, .download-link {
       border: none;
       border-radius: 12px;
-      padding: 0 18px;
-      height: 46px;
+      padding: 0 20px;
+      height: 48px;
       font-size: 15px;
       cursor: pointer;
       transition: 0.15s;
@@ -121,13 +153,13 @@
     }
 
     .make-btn {
-      background: #42a5f5;
+      background: #009688;
       color: white;
     }
 
     .clear-btn {
-      background: #b0bec5;
-      color: white;
+      background: #cfd8dc;
+      color: #37474f;
     }
 
     .download-link {
@@ -140,16 +172,17 @@
     .status {
       min-height: 24px;
       margin-top: 14px;
-      color: #555;
+      color: #004d40;
+      font-weight: 500;
       font-size: 14px;
     }
 
     .result-box {
-      margin-top: 20px;
-      padding: 18px;
+      margin-top: 24px;
+      padding: 20px;
       border-radius: 18px;
-      background: #f7f9fb;
-      border: 1px solid #edf1f5;
+      background: #f0f7f6;
+      border: 1px solid #b2dfdb;
     }
 
     audio {
@@ -158,9 +191,9 @@
     }
 
     .help {
-      margin-top: 12px;
+      margin-top: 20px;
       font-size: 13px;
-      color: #777;
+      color: #78909c;
       line-height: 1.6;
     }
 
@@ -173,60 +206,75 @@
 </head>
 <body>
   <div class="container">
-    <h1>AI TTS 음성 변환기</h1>
-    <div class="subtitle">텍스트를 AI 음성 mp3 파일로 변환합니다</div>
+    <h1>🧬 Bio-Lab 스마트 랩 어시스턴트</h1>
+    <div class="subtitle">실험 중 양손이 자유롭지 못할 때, AI가 실험 절차를 실시간 가이드해 드립니다</div>
 
     <div class="info">
-      현재 구조: GitHub Pages 화면 → Google Apps Script 서버 → OpenAI TTS API → mp3 음성 반환<br />
-      API Key는 index.html에 들어가지 않고 Apps Script의 스크립트 속성에 저장됩니다.
+      💡 <b>Tip:</b> 연구실 환경에 맞춰 <b>목소리 종류</b>를 고르고, 실험을 여유롭게 따라 할 수 있도록 <b>속도를 0.85 ~ 0.90</b> 정도로 약간 느리게 설정하는 것을 추천합니다. 단위는 한글 발음으로 적어야 명확히 들립니다.
     </div>
 
+    <div class="section-title">🧪 실험 프로토콜 템플릿 선택</div>
+    <div class="template-box">
+      <button type="button" class="template-btn" onclick="loadProtocol('pcr')">🧬 PCR 마스터믹스 제조</button>
+      <button type="button" class="template-btn" onclick="loadProtocol('dna')">🧪 DNA 추출 (Cell Lysis)</button>
+      <button type="button" class="template-btn" onclick="loadProtocol('gel')">🧫 Agarose Gel 전기영동</button>
+    </div>
+
+    <div class="section-title">🎛️ AI 음성 설정</div>
     <div class="option-box">
       <select id="modelSelect">
-        <option value="tts-1">tts-1 빠른 생성</option>
-        <option value="tts-1-hd">tts-1-hd 고품질</option>
+        <option value="tts-1">tts-1 (빠른 가이드 생성)</option>
+        <option value="tts-1-hd">tts-1-hd (고품질 음성)</option>
       </select>
 
       <select id="voiceSelect">
-        <option value="alloy">alloy</option>
-        <option value="echo">echo</option>
-        <option value="fable">fable</option>
-        <option value="onyx">onyx</option>
-        <option value="nova">nova</option>
-        <option value="shimmer">shimmer</option>
+        <option value="alloy">alloy (차분함)</option>
+        <option value="echo">echo (중저음 남성)</option>
+        <option value="fable">fable (선명함)</option>
+        <option value="onyx">onyx (굵은 남성음)</option>
+        <option value="nova" selected>nova (또렷한 여성음 - 추천)</option>
+        <option value="shimmer">shimmer (밝은 여성음)</option>
       </select>
 
-      <input id="speedInput" type="number" min="0.25" max="4.0" step="0.05" value="1.0" placeholder="속도" />
+      <input id="speedInput" type="number" min="0.25" max="4.0" step="0.05" value="0.90" placeholder="속도" />
     </div>
 
     <div>
-      <div class="label">변환할 텍스트</div>
-      <textarea id="textInput" placeholder="음성으로 바꿀 문장을 입력하세요. 예: 안녕하세요. 오늘은 Firebase와 OpenAI API를 활용한 웹페이지 제작을 배워보겠습니다."></textarea>
+      <div class="section-title">📝 실험 가이드 내용 (직접 수정 가능)</div>
+      <textarea id="textInput" placeholder="실험실에서 청취할 프로토콜 내용을 입력하거나 위의 템플릿을 선택하세요."></textarea>
     </div>
 
     <div class="button-row">
       <button class="clear-btn" id="clearBtn">초기화</button>
-      <button class="make-btn" id="makeBtn">음성 만들기</button>
+      <button class="make-btn" id="makeBtn">음성 가이드 생성</button>
     </div>
 
     <div id="status" class="status"></div>
 
     <div id="resultBox" class="result-box hidden">
-      <div class="label">생성된 음성</div>
+      <div class="section-title" style="margin-top:0;">🔊 생성된 오디오 가이드</div>
       <audio id="audioPlayer" controls></audio>
       <div class="button-row">
-        <a id="downloadLink" class="download-link" href="#" download="tts-audio.mp3">mp3 다운로드</a>
+        <a id="downloadLink" class="download-link" href="#" download="lab-guide.mp3">오디오 파일(.mp3) 다운로드</a>
       </div>
     </div>
 
     <div class="help">
-      긴 문장은 생성 시간이 오래 걸릴 수 있습니다. 처음에는 짧은 문장으로 테스트해보세요.<br />
-      속도는 0.25부터 4.0까지 조절할 수 있습니다.
+      * 긴 실험 프로토콜은 음성 변환에 시간이 수십 초 소요될 수 있습니다.<br />
+      * Ctrl + Enter 키를 누르면 바로 음성 가이드가 생성됩니다.
     </div>
   </div>
 
   <script>
+    // Google Apps Script 웹앱 URL
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzvCeCidpIBm3Ez_AbmzTRrvzCkPa_7x-irAazDPzljPmuqjjHZOqXxfyS1vNh7tX1/exec';
+
+    // 생명공학 프로토콜 데이터베이스 (단위를 한글 독음으로 변환하여 가독성 증대)
+    const protocolTemplates = {
+      pcr: "피시알 마스터믹스 제조 가이드입니다.\n\n제 일단계. 영점 이 밀리리터 피시알 튜브를 얼음 위에 준비하십시오.\n\n제 이단계. 프리믹스용 마이크로 튜브에 파이펫을 사용하여 멸균수 십일 마이크로리터를 넣습니다.\n\n제 삼단계. 이어서 텐 엑스 피시알 버퍼 이 마이크로리터, 디앤티피 믹스 이 마이크로리터를 차례로 첨가합니다.\n\n제 사단계. 포워드 프라이머와 리버스 프라이머를 각각 일 마이크로리터씩 투입하십시오.\n\n제 오단계. 마지막으로 탁 폴리머레이즈 영점 이 마이크로리터를 넣은 후 젠틀하게 파이펫팅하여 섞어줍니다.",
+      dna: "세포 용해 및 디앤에이 추출 단계입니다.\n\n제 일단계. 펠렛이 포함된 튜브에 세포 용해 완충액 오백 마이크로리터를 첨가합니다.\n\n제 이단계. 볼텍서를 사용하여 세포 침전물이 완전히 풀릴 때까지 오초간 믹싱합니다.\n\n제 삼단계. 프로티네이즈 케이 시 마이크로리터를 추가하고 조심스럽게 인버팅 하십시오.\n\n제 사단계. 항온 수조 또는 인큐베이터의 온도를 오십육 도로 맞춘 후, 튜브를 넣고 한 시간 동안 반응시키십시오. 반응 도중 시분 간격으로 가볍게 흔들어 주면 좋습니다.",
+      gel: "아오로스 겔 제작 및 전기영동 절차입니다.\n\n제 일단계. 일 곱하기 티에이이 버퍼 오십 밀리리터에 아가로스 분말 영점 오 그램을 약품 저울로 계량하여 넣습니다.\n\n제 이단계. 전자레인지에 용액을 넣고, 투명해질 때까지 삼십초 간격으로 확인하며 가열합니다. 용액이 매우 뜨거우니 실리콘 장갑을 착용하십시오.\n\n제 삼단계. 용액이 육십 도 정도로 식으면, 핵산 염색 시약인 다이 오 마이크로리터를 첨가하고 겔 트레이에 기포가 생기지 않도록 천천히 부어줍니다.\n\n제 사단계. 겔이 완전히 굳을 때까지 이십분 동안 실온에 방치하십시오."
+    };
 
     const textInput = document.getElementById('textInput');
     const modelSelect = document.getElementById('modelSelect');
@@ -238,6 +286,15 @@
     const resultBox = document.getElementById('resultBox');
     const audioPlayer = document.getElementById('audioPlayer');
     const downloadLink = document.getElementById('downloadLink');
+
+    // 템플릿 로드 함수
+    window.loadProtocol = function(type) {
+      if(protocolTemplates[type]) {
+        textInput.value = protocolTemplates[type];
+        statusBox.textContent = '선택한 프로토콜이 입력되었습니다. 음성 가이드 생성 버튼을 눌러주세요.';
+        resultBox.classList.add('hidden');
+      }
+    }
 
     makeBtn.addEventListener('click', makeSpeech);
     clearBtn.addEventListener('click', clearPage);
@@ -255,7 +312,7 @@
       const speed = Number(speedInput.value || 1.0);
 
       if (!text) {
-        alert('음성으로 변환할 텍스트를 입력해주세요.');
+        alert('실험 가이드로 변환할 프로토콜 내용을 입력해주세요.');
         return;
       }
 
@@ -267,7 +324,7 @@
       try {
         setLoading(true);
         resultBox.classList.add('hidden');
-        statusBox.textContent = 'Apps Script 서버에 TTS 요청을 보내는 중입니다.';
+        statusBox.textContent = '🧬 AI 음성 허브서버로 실험 데이터를 송신 중입니다. 잠시만 기다려주세요...';
 
         const response = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
@@ -287,7 +344,7 @@
         }
 
         if (!data.audioBase64) {
-          throw new Error('음성 데이터를 받지 못했습니다.');
+          throw new Error('음성 가이드 데이터를 수신하지 못했습니다.');
         }
 
         const audioUrl = base64ToAudioUrl(data.audioBase64, 'audio/mpeg');
@@ -296,10 +353,10 @@
         downloadLink.href = audioUrl;
         downloadLink.download = makeFileName();
         resultBox.classList.remove('hidden');
-        statusBox.textContent = '음성 생성 완료';
+        statusBox.textContent = '✅ 오디오 가이드 준비 완료. 플레이어를 재생하거나 다운로드하세요.';
       } catch (error) {
         console.error(error);
-        statusBox.textContent = '요청 실패';
+        statusBox.textContent = '❌ 요청 실패';
         alert('오류가 발생했습니다.\n\n' + error.message);
       } finally {
         setLoading(false);
@@ -331,14 +388,12 @@
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
-      const hour = String(now.getHours()).padStart(2, '0');
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      return `tts-${year}${month}${day}-${hour}${minute}.mp3`;
+      return `BioLab-Guide-${year}${month}${day}.mp3`;
     }
 
     function setLoading(isLoading) {
       makeBtn.disabled = isLoading;
-      makeBtn.textContent = isLoading ? '생성 중...' : '음성 만들기';
+      makeBtn.textContent = isLoading ? '🧪 가이드 생성 중...' : '음성 가이드 생성';
     }
 
     function clearPage() {
@@ -351,4 +406,3 @@
   </script>
 </body>
 </html>
-

@@ -137,9 +137,9 @@
     select, input { height: 46px; }
     textarea {
       width: 100%;
-      min-height: 180px;
+      min-height: 220px;
       resize: vertical;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.6;
       font-family: inherit;
     }
@@ -191,7 +191,7 @@
     .clear-btn { background: #cfd8dc; color: #37474f; }
     .download-link { background: #00796b; color: white; }
 
-    .hidden { display: none; }
+    .hidden { display: none !important; }
 
     .status {
       min-height: 24px;
@@ -247,7 +247,7 @@
       </div>
 
       <div class="info">
-        💡 <b>Tip:</b> 하단의 <b>'오디오 파일(.mp3) 다운로드'</b> 단추를 누르면 PC나 스마트폰에 직접 음성 가이드를 보관하여 무선 네트워크 연결이 불안정한 Wet-lab 내부에서도 끊김 없이 청취할 수 있습니다.
+        💡 <b>Tip:</b> 하단의 <b>'오디오 파일(.mp3) 내 기기에 저장'</b> 단추를 누르면 PC나 스마트폰에 직접 음성 가이드를 보관할 수 있습니다. 무선 네트워크 연결이 불안정한 실험실 내부에서도 끊김 없이 청취하세요!
       </div>
 
       <div class="section-title">🧪 실험 프로토콜 템플릿 선택</div>
@@ -255,6 +255,9 @@
         <button type="button" class="template-btn" onclick="loadProtocol('pcr')">🧬 PCR 마스터믹스 제조</button>
         <button type="button" class="template-btn" onclick="loadProtocol('dna')">🧪 DNA 추출 (Cell Lysis)</button>
         <button type="button" class="template-btn" onclick="loadProtocol('gel')">🧫 Agarose Gel 전기영동</button>
+        <button type="button" class="template-btn" onclick="loadProtocol('trans')">🧫 대장균 형질전환</button>
+        <button type="button" class="template-btn" onclick="loadProtocol('bradford')">📊 단백질 정량 (Bradford)</button>
+        <button type="button" class="template-btn" onclick="loadProtocol('prep')">🌀 Plasmid DNA 미니프렙</button>
       </div>
 
       <div class="section-title">🎛️ AI 음성 설정</div>
@@ -298,7 +301,7 @@
 
       <div class="help">
         * Ctrl + Enter 키를 누르면 바로 음성 가이드가 생성됩니다.<br />
-        * 다운로드한 파일은 무단 배포를 금합니다.
+        * 다운로드한 파일은 연구실 외부 무단 배포를 금합니다.
       </div>
     </section>
   </div>
@@ -313,7 +316,7 @@
       onAuthStateChanged
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-    // 귀하의 기존 Firebase Config 정보 유지
+    // Firebase Config 정보 유지
     const firebaseConfig = {
       apiKey: 'AIzaSyDO-v52Ehwphh5gW0WBzu9_DliMhOzy4Yo',
       authDomain: 'kang-f4e85.firebaseapp.com',
@@ -331,11 +334,14 @@
     // Google Apps Script 백엔드 중계 주소
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzvCeCidpIBm3Ez_AbmzTRrvzCkPa_7x-irAazDPzljPmuqjjHZOqXxfyS1vNh7tX1/exec';
 
-    // 실험 템플릿 텍스트 뱅크
+    // 생명공학 프로토콜 데이터베이스 (확장형 6대 시나리오 한글 가독성 패치본)
     const protocolTemplates = {
-      pcr: "피시알 마스터믹스 제조 가이드입니다.\n\n제 일단계. 영점 이 밀리리터 피시알 튜브를 얼음 위에 준비하십시오.\n\n제 이단계. 프리믹스용 마이크로 튜브에 파이펫을 사용하여 멸균수 십일 마이크로리터를 넣습니다.\n\n제 삼단계. 이어서 텐 엑스 피시알 버퍼 이 마이크로리터, 디앤티피 믹스 이 마이크로리터를 차례로 첨가합니다.\n\n제 사단계. 포워드 프라이머와 리버스 프라이머를 각각 일 마이크로리터씩 투입하십시오.\n\n제 오단계. 마지막으로 탁 폴리머레이즈 영점 이 마이크로리터를 넣은 후 젠틀하게 파이펫팅하여 섞어줍니다.",
-      dna: "세포 용해 및 디앤에이 추출 단계입니다.\n\n제 일단계. 펠렛이 포함된 튜브에 세포 용해 완충액 오백 마이크로리터를 첨가합니다.\n\n제 이단계. 볼텍서를 사용하여 세포 침전물이 완전히 풀릴 때까지 오초간 믹싱합니다.\n\n제 삼단계. 프로티네이즈 케이 시 마이크로리터를 추가하고 조심스럽게 인버팅 하십시오.\n\n제 사단계. 항온 수조 또는 인큐베이터의 온도를 오십육 도로 맞춘 후, 튜브를 넣고 한 시간 동안 반응시키십시오. 반응 도중 시분 간격으로 가볍게 흔들어 주면 좋습니다.",
-      gel: "아오로스 겔 제작 및 전기영동 절차입니다.\n\n제 일단계. 일 곱하기 티에이이 버퍼 오십 밀리리터에 아가로스 분말 영점 오 그램을 약품 저울로 계량하여 넣습니다.\n\n제 이단계. 전자레인지에 용액을 넣고, 투명해질 때까지 삼십초 간격으로 확인하며 가열합니다. 용액이 매우 뜨거우니 실리콘 장갑을 착용하십시오.\n\n제 삼단계. 용액이 육십 도 정도로 식으면, 핵산 염색 시약인 다이 오 마이크로리터를 첨가하고 겔 트레이에 기포가 생기지 않도록 천천히 부어줍니다.\n\n제 사단계. 겔이 완전히 굳을 때까지 이십분 동안 실온에 방치하십시오."
+      pcr: "피시알 마스터믹스 제조 가이드입니다.\n\n제 일단계. 영점 이 밀리리터 피시알 튜브를 얼음 위에 흔들리지 않게 고정하십시오.\n\n제 이단계. 프리믹스용 마이크로 튜브에 파이펫을 사용하여 멸균수 십일 마이크로리터를 정확히 분주합니다.\n\n제 삼단계. 이어서 텐 엑스 피시알 버퍼 이 마이크로리터와 디앤티피 믹스 이 마이크로리터를 차례로 첨가합니다.\n\n제 사단계. 타겟 유전자에 맞는 포워드 프라이머와 리버스 프라이머를 각각 일 마이크로리터씩 투입하십시오.\n\n제 오단계. 마지막으로 열에 강한 탁 폴리머레이즈 영점 이 마이크로리터를 넣은 후 팁 끝을 이용해 조심스럽게 파이펫팅하여 섞어줍니다. 거품이 생기지 않도록 주의하십시오.",
+      dna: "세포 용해 및 유전체 디앤에이 추출 단계입니다.\n\n제 일단계. 원심분리 후 상등액을 제거하여 얻은 세포 펠렛 튜브에 세포 용해 완충액 오백 마이크로리터를 첨가합니다.\n\n제 이단계. 볼텍서를 약하게 틀어 세포 침전물이 뭉친 곳 없이 완전히 풀릴 때까지 오초간 믹싱합니다.\n\n제 삼단계. 단백질을 분해하기 위한 프로티네이즈 케이 시 마이크로리터를 추가하고 튜브를 위아래로 조심스럽게 오회 이상 인버팅 하십시오.\n\n제 사단계. 항온 수조 또는 인큐베이터의 온도를 오십육 도로 맞춘 후 튜브를 넣고 한 시간 동안 반응시키십시오. 반응 도중 십분 간격으로 가볍게 흔들어 주면 용해 효율이 극대화됩니다.",
+      gel: "아오로스 겔 제작 및 핵산 전기영동 절차입니다.\n\n제 일단계. 일 곱하기 티에이이 버퍼 오십 밀리리터에 아가로스 분말 영점 오 그램을 약품 저울로 정밀 계량하여 삼각플라스크에 넣습니다.\n\n제 이단계. 전자레인지에 용액을 넣고, 알갱이가 없이 투명해질 때까지 삼십초 간격으로 끊어서 가열합니다. 용액이 끓어 넘치거나 화상을 입을 수 있으니 반드시 실리콘 장갑을 착용하십시오.\n\n제 삼단계. 용액이 육십 도 정도로 따뜻하게 식으면, 안전한 핵산 염색 시약인 다이 오 마이크로리터를 첨가하고 겔 트레이에 웰 형성용 콤을 꽂은 뒤 기포가 생기지 않도록 천천히 부어줍니다.\n\n제 사단계. 겔이 불투명하게 완전히 굳을 때까지 이십분 동안 실온에 방치한 뒤, 버퍼 탱크에 넣고 샘플을 로딩하십시오.",
+      trans: "컴피턴트 셀을 이용한 대장균 형질전환 프로토콜입니다.\n\n제 일단계. 영하 팔십 도 냉동고에서 꺼낸 컴피턴트 셀 튜브를 얼음 위에서 오분간 천천히 녹입니다. 이때 세포가 손상될 수 있으므로 절대 손으로 만지거나 볼텍싱하지 마십시오.\n\n제 이단계. 녹은 세포에 외부 디앤에이 또는 리게이션 생성물 이 마이크로리터를 첨가하고 손가락 끝으로 톡톡 쳐서 가볍게 섞어준 뒤 얼음 위에 이십분간 방치합니다.\n\n제 삼단계. 이어서 사십이 도 항온 수조에 튜브를 넣고 정확히 사십오초 동안 열 충격을 가합니다. 초 단위 타이머를 미리 세팅해 두십시오.\n\n제 사단계. 열 충격 직후 튜브를 다시 얼음으로 옮겨 이분간 인큐베이션 한 뒤, 에스오씨 배지 오백 마이크로리터를 넣고 삼십칠 도 회전 배양기에서 한 시간 동안 회복 배양을 진행하십시오.",
+      bradford: "브래드포드 공인법을 이용한 단백질 정량 분석 가이드입니다.\n\n제 일단계. 비에스에이 표준 용액을 단계별로 희석하여 영, 이, 사, 육, 팔, 십 마이크로그램 퍼 밀리리터 농도의 표준 시료 시리즈를 제조합니다.\n\n제 이단계. 구십육 웰 플레이트의 각 웰에 표준 시료와 추출한 단백질 샘플을 각각 오 마이크로리터씩 중복으로 분주합니다.\n\n제 삼단계. 각 웰에 브래드포드 시약 이백 마이크로리터를 멀티 파이펫을 사용하여 기포가 나지 않도록 일정하게 주입하십시오.\n\n제 사단계. 빛이 차단된 실온에서 오분간 반응시킨 후, 플레이트 리더기를 사용하여 오백구십오 나노미터 파장에서 흡광도를 측정하십시오. 흡광도 값이 정상 범위를 벗어나면 샘플을 추가 희석해야 합니다.",
+      prep: "대장균으로부터 플라스미드 디앤에이를 정제하는 미니프렙 가이드입니다.\n\n제 일단계. 배양된 대장균 액체 배지 일점 오 밀리리터를 튜브에 넣고 만 삼천 알피엠에서 일분간 원심분리하여 상등액을 완전히 흡입 제거합니다.\n\n제 이단계. 세포 재현탁 버퍼 이백오십 마이크로리터를 넣고 파이펫팅으로 세포를 완벽히 풉니다. 세포가 뭉쳐있으면 다음 단계에서 용해가 되지 않습니다.\n\n제 삼단계. 세포 용해 버퍼 이백오십 마이크로리터를 넣고 인버팅으로 부드럽게 사회 섞어줍니다. 투명하고 끈적해지면 이분 내로 중화 버퍼 삼백오십 마이크로리터를 넣고 즉시 섞어 백색 침전물이 생기도록 하십시오.\n\n제 사단계. 만 삼천 알피엠에서 십분간 원심분리한 후, 맑은 상등액만 스핀 컬럼으로 옮겨 담고 원심분리와 워싱 버퍼 과정을 거쳐 최종 멸균수로 플라스미드 디앤에이를 용출해 내십시오."
     };
 
     // DOM 요소 변수 매핑
@@ -359,7 +365,7 @@
     const audioPlayer = document.getElementById('audioPlayer');
     const downloadLink = document.getElementById('downloadLink');
 
-    // [인증 로직] 회원가입 및 로그인 연동
+    // [인증 로직] 회원가입 및 로그인
     signupBtn.addEventListener('click', async () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
@@ -367,7 +373,7 @@
 
       try {
         await createUserWithEmailAndPassword(auth, email, password);
-        alert('연구원 등록이 승인되었습니다.');
+        alert('연구원 등록이 완료되어 자동 접속됩니다.');
       } catch (error) {
         alert(getKoreanErrorMessage(error.code));
       }
@@ -388,6 +394,7 @@
     logoutBtn.addEventListener('click', async () => {
       try {
         await signOut(auth);
+        alert('안전하게 로그아웃되었습니다.');
       } catch (error) {
         alert('로그아웃 처리 중 에러가 발생했습니다.');
       }
@@ -410,11 +417,11 @@
 
     function validateAuth(email, password) {
       if (!email || !password) {
-        alert('이메일과 비밀번호를 모두 기재해 주십시오.');
+        alert('이메일과 비밀번호를 모두 입력해 주세요.');
         return false;
       }
       if (password.length < 6) {
-        alert('비밀번호 보호를 위해 최소 6자리 이상 설정하십시오.');
+        alert('비밀번호는 최소 6자리 이상이어야 합니다.');
         return false;
       }
       return true;
@@ -424,7 +431,7 @@
     window.loadProtocol = function(type) {
       if(protocolTemplates[type]) {
         textInput.value = protocolTemplates[type];
-        statusBox.textContent = '🔬 프로토콜이 성공적으로 주입되었습니다.';
+        statusBox.textContent = '🔬 프로토콜 템플릿이 입력되었습니다. 필요 시 내용을 수정하고 음성 생성을 누르세요.';
         resultBox.classList.add('hidden');
       }
     }
@@ -452,7 +459,7 @@
       try {
         setLoading(true);
         resultBox.classList.add('hidden');
-        statusBox.textContent = '🧬 AI 음성 클라우드 서버로 실험 가이드 변환을 요청하는 중입니다...';
+        statusBox.textContent = '🧬 AI 음성 허브서버로 실험 데이터를 송신 중입니다. 잠시만 기다려주세요...';
 
         const response = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
@@ -467,7 +474,7 @@
 
         const data = await response.json();
         if (data.error) throw new Error(data.error);
-        if (!data.audioBase64) throw new Error('데이터 스트림 연동 오류 발생.');
+        if (!data.audioBase64) throw new Error('음성 가이드 데이터를 수신하지 못했습니다.');
 
         // 이진 데이터 변환 과정을 거쳐 로컬 브라우저 인메모리 Blob URL 생성
         const audioUrl = base64ToAudioUrl(data.audioBase64, 'audio/mpeg');
@@ -477,7 +484,7 @@
         downloadLink.download = makeFileName();
         
         resultBox.classList.remove('hidden');
-        statusBox.textContent = '✅ 오디오 가이드 빌드 완료. 내부 기기에 파일 저장이 가능합니다.';
+        statusBox.textContent = '✅ 오디오 가이드 빌드 완료. 플레이어를 재생하거나 내 기기에 저장하세요.';
       } catch (error) {
         console.error(error);
         statusBox.textContent = '❌ 가이드 생성 실패';
@@ -524,16 +531,16 @@
     function getKoreanErrorMessage(code) {
       switch (code) {
         case 'auth/email-already-in-use': return '이미 등록된 연구원 이메일입니다.';
-        case 'auth/invalid-email': return '올바른 이메일 규격이 아닙니다.';
-        case 'auth/weak-password': return '보안 수준이 낮습니다. 6자리 이상의 패스워드를 구성해 주세요.';
+        case 'auth/invalid-email': return '올바른 이메일 형식이 아닙니다.';
+        case 'auth/weak-password': return '보안 수준이 낮습니다. 6자리 이상의 비밀번호를 설정해 주세요.';
         case 'auth/user-not-found': return '등록되지 않은 이메일 정보입니다.';
-        case 'auth/wrong-password': return '패스워드가 일치하지 않습니다.';
+        case 'auth/wrong-password': return '비밀번호가 일치하지 않습니다.';
         case 'auth/invalid-credential': return '이메일 또는 비밀번호를 다시 확인하십시오.';
         default: return `인증 시스템 오류: ${code}`;
       }
     }
 
-    // 엔터키 제어 인터랙션 추가
+    // 엔터키 로그인 인터랙션 추가
     document.addEventListener('keydown', function(event) {
       if (event.key !== 'Enter') return;
       const activeId = document.activeElement.id;
